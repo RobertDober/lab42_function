@@ -1,0 +1,14 @@
+branches:
+  only:
+    - master
+
+language: ruby
+rvm:
+  - "2.3.1"
+  - "2.4.0"
+
+install: 
+  - bundle install
+script: 
+  - bundle exec rspec spec
+# # - CODECLIMATE_REPO_TOKEN=${CODECLIMATE_LAB42CORE_TOKEN} bundle exec codeclimate-test-reporter
