@@ -17,10 +17,12 @@
 require 'simplecov'
 SimpleCov.start
 
-PROJECT_ROOT = File.expand_path "../..", __FILE__
-$: << File.join(PROJECT_ROOT, 'lib')
+
 require 'lab42/function'
 
+F = Lab42::Function
+
+PROJECT_ROOT = File.expand_path "../..", __FILE__
 Dir[File.join(PROJECT_ROOT,"spec/support/**/*.rb")].each {|f| require fh }
 
 RSpec.configure do |config|
