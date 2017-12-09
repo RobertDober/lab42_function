@@ -46,6 +46,27 @@ RSpec.describe F do
         it { expect{ inc_and_mult_by.(1) }.to raise_error(ArgumentError) }
         it { expect{ inc_and_mult_by.(1, 3, 7) }.to raise_error(ArgumentError) }
       end
+
+      context 'all second stage params go to partial' do 
+        let( :mult_by_and_inc ){ F.s(:*, &:succ) }
+
+        it { expect(mult_by_and_inc.(10, 3)).to eq(31) }
+
+        it { expect{ mult_by_and_inc.() }.to raise_error(ArgumentError) }
+        it { expect{ mult_by_and_inc.(10) }.to raise_error(ArgumentError) }
+        it { expect{ mult_by_and_inc.(10, 11, 12) }.to raise_error(ArgumentError) }
+      end
+
+      context 'second stage params shared' do 
+        let( :add_and_mult ){ F.s(:+){|x, n| x * n } }
+
+        it { expect(add_and_mult.(20, 1, 2)).to eq(42) }
+
+        it { expect{ add_and_mult.() }.to raise_error(ArgumentError) }
+        it { expect{ add_and_mult.(1) }.to raise_error(ArgumentError) }
+        it { expect{ add_and_mult.(1, 3) }.to raise_error(ArgumentError) }
+        it { expect{ add_and_mult.(1, 3, 9, 27) }.to raise_error(ArgumentError) }
+      end
     end
   end
 

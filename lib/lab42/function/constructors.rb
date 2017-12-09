@@ -2,6 +2,11 @@ module Lab42
   class Function
     module Constructors
 
+      def constant const_val
+        new ->{ const_val }, 0
+      end
+      alias_method :c, :constant
+
       def free_receiver msg, *first_stage_params, &blk
         unless blk
           return new ->(rcv, *second_stage_params){
@@ -12,9 +17,13 @@ module Lab42
 
         chained_free_receiver msg, first_stage_params, blk
       end
-
       # The free_receiver's abbreviation s stands for `send`
       alias_method :s, :free_receiver
+
+      def force_pipe
+        @__force_pipe__ ||= BasicObject.new
+      end
+      alias_method :f, :force_pipe
 
       def partial rcv, msg, *first_stage_params, &blk
         mthd = rcv.method msg
@@ -36,7 +45,7 @@ module Lab42
           mthd = rcv.method msg
           beh_params, blk_params = split_by_arity(mthd, second_stage_params)
           blk_params ||= []
-          raise ArgumentError unless blk.arity == blk_params.size + 1
+            raise ArgumentError unless blk.arity == blk_params.size + 1 || blk.arity < 0
           blk.(mthd.(*(first_stage_params + beh_params)), *blk_params)
         }
       end
@@ -45,7 +54,7 @@ module Lab42
         new ->(*second_stage_params){
           beh_params, blk_params = split_by_arity(mthd, second_stage_params)
           blk_params ||= []
-          raise ArgumentError unless blk.arity == blk_params.size + 1
+          raise ArgumentError unless blk.arity == blk_params.size + 1 || blk.arity < 0
           blk.(mthd.(*(first_stage_params + beh_params)), *blk_params)
         }
       end
