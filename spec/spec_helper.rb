@@ -14,6 +14,8 @@
 #
 # sEE http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+require 'simplecov'
+SimpleCov.start
 
 PROJECT_ROOT = File.expand_path "../..", __FILE__
 $: << File.join(PROJECT_ROOT, 'lib')
