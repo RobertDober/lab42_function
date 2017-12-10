@@ -10,6 +10,7 @@ module Lab42
 
     require_relative 'function/constructors'
     require_relative 'function/make_function'
+    require_relative 'function/my'
     require_relative 'function/placeholder'
 
     extend Constructors
