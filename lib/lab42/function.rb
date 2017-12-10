@@ -1,6 +1,3 @@
-require_relative 'function/constructors'
-require_relative 'function/make_function'
-
 # Namespace of almost all my gems, certainly all which are marked
 # as **Unintrusive** or **Isolated**
 module Lab42
@@ -10,6 +7,11 @@ module Lab42
   #   - Chaining
   #
   class Function
+
+    require_relative 'function/constructors'
+    require_relative 'function/make_function'
+    require_relative 'function/placeholder'
+
     extend Constructors
 
     attr_reader :behavior, :arity

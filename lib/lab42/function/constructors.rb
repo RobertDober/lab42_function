@@ -1,6 +1,9 @@
 module Lab42
   class Function
     module Constructors
+      require_relative 'params_reorderer'
+
+      R = Lab42::Function::ParamsReorderer
 
       def constant const_val
         new ->{ const_val }, 0
@@ -11,7 +14,7 @@ module Lab42
         unless blk
           return new ->(rcv, *second_stage_params){
             mthd = rcv.method(msg)
-            mthd.(*(first_stage_params + second_stage_params))
+            mthd.(*R.combine_and_reorder(first_stage_params, second_stage_params))
           }
         end
 
@@ -29,7 +32,7 @@ module Lab42
         mthd = rcv.method msg
         unless blk
           return new ->(*second_stage_params){
-            mthd.(*(first_stage_params + second_stage_params))
+            mthd.(*R.combine_and_reorder(first_stage_params, second_stage_params))
           }
         end
 
@@ -37,6 +40,13 @@ module Lab42
       end
       alias_method :p, :partial
 
+      def placeholder n
+        Function::Placeholder.make(n)
+      end
+      alias_method :a, :placeholder
+      def a1; placeholder 1 end
+      def a2; placeholder 2 end
+      def a3; placeholder 3 end
 
       private
 
@@ -46,7 +56,7 @@ module Lab42
           beh_params, blk_params = split_by_arity(mthd, second_stage_params)
           blk_params ||= []
             raise ArgumentError unless blk.arity == blk_params.size + 1 || blk.arity < 0
-          blk.(mthd.(*(first_stage_params + beh_params)), *blk_params)
+          blk.(mthd.(*R.combine_and_reorder(first_stage_params, beh_params)), *blk_params)
         }
       end
 
@@ -55,7 +65,7 @@ module Lab42
           beh_params, blk_params = split_by_arity(mthd, second_stage_params)
           blk_params ||= []
           raise ArgumentError unless blk.arity == blk_params.size + 1 || blk.arity < 0
-          blk.(mthd.(*(first_stage_params + beh_params)), *blk_params)
+          blk.(mthd.(*R.combine_and_reorder(first_stage_params, beh_params)), *blk_params)
         }
       end
 
